@@ -55,7 +55,7 @@ def train_random_forest():
 
     # Set up data
     X = data[['formula', 'space_group']]
-    y = data['formation_energy_value']
+    y = data['formation_energy_value_per_atom']
     cv = KFold(n_splits=9, shuffle=True, random_state=42)
 
     # Directory to save models

@@ -11,7 +11,7 @@ test_data = shuffle(test_data, random_state=42).reset_index(drop=True)
 
 # Separate features and target
 X_test = test_data[['formula', 'space_group']]
-y_true = test_data['formation_energy_value']
+y_true = test_data['formation_energy_value_per_atom']
 
 # Load models and make predictions
 model_dir = 'model/random_forest/'
