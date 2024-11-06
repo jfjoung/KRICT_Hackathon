@@ -1,11 +1,11 @@
 # train.py
 
-from model.random_forest.random_forest import train_random_forest
+from model.gradient_boosting_regressor.gradient_boosting import train_gradient_boosting
 
 # Run the training function
 print('-'*50)
 print('Start random forest training')
-train_random_forest()
+train_gradient_boosting()
 print('Training is over')
 
 
