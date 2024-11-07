@@ -1,11 +1,11 @@
 # train.py
 
-from model.gradient_boosting_regressor.gradient_boosting import train_gradient_boosting
+from model.support_vector.support_vector_regression import train_svr
 
 # Run the training function
 print('-'*50)
-print('Start random forest training')
-train_gradient_boosting()
+print('Start gradient_boosting training_hp')
+train_svr()
 print('Training is over')
 
 

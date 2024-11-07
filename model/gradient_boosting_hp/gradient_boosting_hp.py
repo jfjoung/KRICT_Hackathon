@@ -1,5 +1,5 @@
-# gradient_boosting.py
-
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
+from sklearn.ensemble import GradientBoostingRegressor
 import pandas as pd
 import numpy as np
 import joblib
@@ -14,7 +14,6 @@ from sklearn.metrics import mean_squared_error, r2_score
 import re
 from data_utils.unique import unique_atom, unique_space_group
 
-# Custom transformer to parse formula and extract atom types and stoichiometries
 class FormulaParser(BaseEstimator, TransformerMixin):
     def __init__(self, unique_atoms):
         self.unique_atoms = unique_atoms
@@ -59,12 +58,21 @@ def train_gradient_boosting():
     cv = KFold(n_splits=9, shuffle=True, random_state=42)
 
     # Directory to save models
-    model_dir = 'model/gradient_boosting/'
+    model_dir = 'model/gradient_boosting_regressor_hp/'
     os.makedirs(model_dir, exist_ok=True)
 
     # Track scores
     rmse_scores = []
     r2_scores = []
+
+    # Hyperparameter grid for tuning
+    param_grid = {
+        'model__n_estimators': [100, 200],
+        'model__learning_rate': [0.05, 0.1], 
+        'model__max_depth': [5, 7],
+        'model__min_samples_split': [2, 5],
+        'model__min_samples_leaf': [1, 2]
+    }
 
     # Train and save models for each fold
     for fold, (train_idx, val_idx) in enumerate(cv.split(X)):
@@ -77,15 +85,25 @@ def train_gradient_boosting():
             ('model', GradientBoostingRegressor(random_state=42))
         ])
 
-        # Train model
-        pipeline.fit(X_train, y_train)
+        # GridSearchCV or RandomizedSearchCV
+        grid_search = GridSearchCV(
+            pipeline, param_grid, cv=3, n_jobs=-1, scoring='neg_mean_squared_error'
+        )
         
-        # Save model
+        # Train model with grid search
+        grid_search.fit(X_train, y_train)
+        
+        # Get the best model and its parameters
+        best_model = grid_search.best_estimator_
+        best_params = grid_search.best_params_
+        print(f"Best parameters for fold {fold}: {best_params}")
+
+        # Save the best model
         model_path = os.path.join(model_dir, f'gradient_boosting_fold_{fold}.joblib')
-        joblib.dump(pipeline, model_path)
+        joblib.dump(best_model, model_path)
 
         # Predict on validation set and evaluate
-        y_pred = pipeline.predict(X_val)
+        y_pred = best_model.predict(X_val)
         rmse = np.sqrt(mean_squared_error(y_val, y_pred))
         r2 = r2_score(y_val, y_pred)
 
@@ -95,4 +113,3 @@ def train_gradient_boosting():
     # Print average RMSE and R^2 scores
     print(f"Average RMSE: {np.mean(rmse_scores):.4f} ± {np.std(rmse_scores):.4f}")
     print(f"Average R^2: {np.mean(r2_scores):.4f} ± {np.std(r2_scores):.4f}")
-
