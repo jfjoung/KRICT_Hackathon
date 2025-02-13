@@ -4,7 +4,7 @@ This is project was conducted during the November 2024 Korea Research Institute 
   - Joonyoung Francis Joung
   - Kwangsoo Kim
 
-## Project 1 : Description-formation energy prediction
+## Project 1 : Description-formation energy prediction of Inorganic Crystals
 ### Overview
 This project aims to predict the formation energy of materials using machine learning models. By leveraging structured datasets and various regression models, we evaluate the feasibility of data-driven approaches in computational materials science.
 
@@ -36,5 +36,5 @@ This project aims to predict the formation energy of materials using machine lea
 
 
 
-## Project 2 : Description- 
+## Project 2 : Description-High-Throughput Raman Spectroscopy Analysis
 This project aims to automate Raman spectrum analysis.
